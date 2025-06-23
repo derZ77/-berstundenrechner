@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Rechner Überstunden laut den monatlichen Soll- und Ist-Stunden</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      padding: 1rem;
+      max-width: 900px;
+      margin: auto;
+      background: linear-gradient(to bottom right, #ffe8b3, #ffd280, #ffb347);
+    }
+
+    .overlay {
+      background-color: rgba(255, 255, 255, 0.88);
+      padding: 2rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .app-header {
+      background-color: #fff6e5;
+      border: 1px solid #e6a500;
+      padding: 1.5rem;
+      margin: 0 auto 1rem auto;
+      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      max-width: 90%;
+    }
+
+    .app-header h1 {
+      font-size: 1.6rem;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .app-header small {
+      font-size: 1rem;
+      color: #333;
+      font-weight: 400;
+    }
+
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .input-block {
+      background-color: #fffaf3;
+      border-left: 6px solid #d49b00;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      flex: 1 1 280px;
+      min-width: 250px;
+    }
+
+    .input-block label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .input-block select,
+    .input-block input {
+      width: 100%;
+      padding: 0.4rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fff;
+    }
+
+    .input-block h3 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .content {
+      padding: 1rem;
+      background-color: #fff;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    }
+  
+<style>
+  .holiday-table {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+  }
+
+  .input-block:last-of-type {
+    margin-bottom: 4rem;
+  }
+</style>
+
+</style>
+
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0 1rem;
+    box-sizing: border-box;
+  }
+
+  .input-block {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+
+  table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+  }
+
+  table th, table td {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  input[type="number"] {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    table th, table td {
+      font-size: 0.9rem;
+    }
+
+    h1, h2, h3 {
+      font-size: 1.2rem;
+    }
+
+    button {
+      width: 100%;
+      font-size: 1rem;
+    }
+  }
+
+  #block5-export {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+<style>
+  .holiday-table {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+  }
+
+  .input-block:last-of-type {
+    margin-bottom: 4rem;
+  }
+</style>
+
+</style>
+
+</head>
+<body>
+
+  <div class="overlay">
+    <div class="app-header">
+      <h1>
+        Rechner Überstunden<br>
+        <small>laut den monatlichen Soll- und Ist-Stunden</small>
+      </h1>
+    </div>
+
+    <div class="flex-row">
+      <div class="input-block">
+        <label for="jahr">Kalenderjahr auswählen:</label>
+        <select id="jahr">
+          <option value="">– Bitte wählen –</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+        </select>
+      </div>
+<div class="input-block" style="text-align: center; margin-top: 1rem;">
+  <h3>Feiertage Thüringen</h3>
+  <table class="holiday-table" style="margin: auto; font-family: Courier New, monospace;" style="margin: auto;">
+    <thead>
+      <tr>
+        <th>Datum</th>
+        <th>Wochentag</th>
+        <th>Feiertag</th>
+      </tr>
+    </thead>
+    <tbody id="feiertage-tabelle">
+    </tbody>
+  </table>
+</div>
+
+
+      <div class="input-block">
+        <h3>Überstunden Übertrag aus dem Vorjahr</h3>
+        <label for="uebertrag">Übertrag (in Stunden, Dezimal)</label>
+        <input type="number" id="uebertrag" step="0.1" placeholder="z. B. 12.5">
+      </div>
+    </div>
+
+    </div>
+
+
+<script>
+const feiertage = {"2024": [{"datum": "01.01.2024", "name": "Neujahr", "wochentag": "Montag"}, {"datum": "29.03.2024", "name": "Karfreitag", "wochentag": "Freitag"}, {"datum": "01.04.2024", "name": "Ostermontag", "wochentag": "Montag"}, {"datum": "01.05.2024", "name": "Tag der Arbeit", "wochentag": "Mittwoch"}, {"datum": "09.05.2024", "name": "Christi Himmelfahrt", "wochentag": "Donnerstag"}, {"datum": "20.05.2024", "name": "Pfingstmontag", "wochentag": "Montag"}, {"datum": "30.05.2024", "name": "Fronleichnam", "wochentag": "Donnerstag"}, {"datum": "03.10.2024", "name": "Tag der Deutschen Einheit", "wochentag": "Donnerstag"}, {"datum": "31.10.2024", "name": "Reformationstag", "wochentag": "Donnerstag"}, {"datum": "25.12.2024", "name": "1. Weihnachtstag", "wochentag": "Mittwoch"}], "2025": [{"datum": "01.01.2025", "name": "Neujahr", "wochentag": "Mittwoch"}, {"datum": "18.04.2025", "name": "Karfreitag", "wochentag": "Freitag"}, {"datum": "21.04.2025", "name": "Ostermontag", "wochentag": "Montag"}, {"datum": "01.05.2025", "name": "Tag der Arbeit", "wochentag": "Donnerstag"}, {"datum": "29.05.2025", "name": "Christi Himmelfahrt", "wochentag": "Donnerstag"}, {"datum": "09.06.2025", "name": "Pfingstmontag", "wochentag": "Montag"}, {"datum": "19.06.2025", "name": "Fronleichnam", "wochentag": "Donnerstag"}, {"datum": "03.10.2025", "name": "Tag der Deutschen Einheit", "wochentag": "Freitag"}, {"datum": "31.10.2025", "name": "Reformationstag", "wochentag": "Freitag"}, {"datum": "25.12.2025", "name": "1. Weihnachtstag", "wochentag": "Donnerstag"}, {"datum": "26.12.2025", "name": "2. Weihnachtstag", "wochentag": "Freitag"}], "2026": [{"datum": "01.01.2026", "name": "Neujahr", "wochentag": "Donnerstag"}, {"datum": "03.04.2026", "name": "Karfreitag", "wochentag": "Freitag"}, {"datum": "06.04.2026", "name": "Ostermontag", "wochentag": "Montag"}, {"datum": "01.05.2026", "name": "Tag der Arbeit", "wochentag": "Freitag"}, {"datum": "14.05.2026", "name": "Christi Himmelfahrt", "wochentag": "Donnerstag"}, {"datum": "25.05.2026", "name": "Pfingstmontag", "wochentag": "Montag"}, {"datum": "04.06.2026", "name": "Fronleichnam", "wochentag": "Donnerstag"}, {"datum": "03.10.2026", "name": "Tag der Deutschen Einheit", "wochentag": "Samstag"}, {"datum": "31.10.2026", "name": "Reformationstag", "wochentag": "Samstag"}, {"datum": "25.12.2026", "name": "1. Weihnachtstag", "wochentag": "Freitag"}], "2027": [{"datum": "01.01.2027", "name": "Neujahr", "wochentag": "Freitag"}, {"datum": "26.03.2027", "name": "Karfreitag", "wochentag": "Freitag"}, {"datum": "29.03.2027", "name": "Ostermontag", "wochentag": "Montag"}, {"datum": "01.05.2027", "name": "Tag der Arbeit", "wochentag": "Samstag"}, {"datum": "06.05.2027", "name": "Christi Himmelfahrt", "wochentag": "Donnerstag"}, {"datum": "17.05.2027", "name": "Pfingstmontag", "wochentag": "Montag"}, {"datum": "27.05.2027", "name": "Fronleichnam", "wochentag": "Donnerstag"}, {"datum": "03.10.2027", "name": "Tag der Deutschen Einheit", "wochentag": "Sonntag"}, {"datum": "31.10.2027", "name": "Reformationstag", "wochentag": "Sonntag"}, {"datum": "25.12.2027", "name": "1. Weihnachtstag", "wochentag": "Samstag"}], "2028": [{"datum": "01.01.2028", "name": "Neujahr", "wochentag": "Samstag"}, {"datum": "14.04.2028", "name": "Karfreitag", "wochentag": "Freitag"}, {"datum": "17.04.2028", "name": "Ostermontag", "wochentag": "Montag"}, {"datum": "01.05.2028", "name": "Tag der Arbeit", "wochentag": "Montag"}, {"datum": "25.05.2028", "name": "Christi Himmelfahrt", "wochentag": "Donnerstag"}, {"datum": "05.06.2028", "name": "Pfingstmontag", "wochentag": "Montag"}, {"datum": "15.06.2028", "name": "Fronleichnam", "wochentag": "Donnerstag"}, {"datum": "03.10.2028", "name": "Tag der Deutschen Einheit", "wochentag": "Dienstag"}, {"datum": "31.10.2028", "name": "Reformationstag", "wochentag": "Dienstag"}, {"datum": "25.12.2028", "name": "1. Weihnachtstag", "wochentag": "Montag"}]};
+document.addEventListener("DOMContentLoaded", () => {
+  const jahrSelect = document.getElementById("jahr");
+  const tabelle = document.getElementById("feiertage-tabelle");
+
+  function aktualisieren() {
+    const jahr = jahrSelect.value;
+    tabelle.innerHTML = "";
+    if (feiertage[jahr]) {
+      feiertage[jahr].forEach(e => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${e.datum}</td><td>${e.wochentag}</td><td>${e.name}</td>`;
+        tabelle.appendChild(row);
+      });
+    }
+  }
+
+  jahrSelect.addEventListener("change", aktualisieren);
+  aktualisieren();
+});
+</script>
+
+
+<div class="input-block" style="background-color: #e1f5e1; margin-top: 2rem; padding: 1rem; border-radius: 10px;">
+  <h3 style="text-align: center;">Monatliche Soll-/Ist-Stundenübersicht</h3>
+  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+    <thead>
+      <tr style="background-color: #c7eac7;">
+        <th>Monat</th>
+        <th>Kalender-Solltage</th>
+        <th>Sollstunden (Dezimal)</th>
+        <th>Iststunden (Eingabe)</th>
+      </tr>
+    </thead>
+    <tbody id="block5-table-body"></tbody>
+  </table>
+  <div style="margin-top: 1rem; text-align: center; font-weight: bold;">
+    <p>Jahressumme Sollstunden: <span id="summe-soll">0</span></p>
+    <p>Jahressumme Iststunden: <span id="summe-ist">0</span></p>
+    <p>Aktueller Überstundenstand: <span id="ueberstunden">0</span></p>
+
+    <div style="background-color: #eefaf0; border: 1px solid #6bc178; padding: 0.75rem 1rem; margin-top: 0.75rem; border-radius: 6px; font-weight: bold; color: #2e7d32; text-align: center;">
+      Entspricht: <span id="ueberstunden-hm">0 Stunden 0 Minuten</span>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const monate = ["Januar", "Februar", "März", "April", "Mai", "Juni",
+                  "Juli", "August", "September", "Oktober", "November", "Dezember"];
+  const tbody = document.getElementById("block5-table-body");
+  const jahrDropdown = document.getElementById("jahr");
+  const uebertragFeld = document.getElementById("uebertrag");
+
+  function berechneArbeitstage(jahr, monatIndex) {
+    const start = new Date(jahr, monatIndex, 1);
+    const end = new Date(jahr, monatIndex + 1, 0);
+    let arbeitstage = 0;
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      if (d.getDay() >= 1 && d.getDay() <= 5) arbeitstage++;
+    }
+    return arbeitstage;
+  }
+
+  function fuelleTabelle(jahr) {
+    tbody.innerHTML = "";
+    let jahressoll = 0;
+    for (let i = 0; i < 12; i++) {
+      const solltage = berechneArbeitstage(jahr, i);
+      const sollstunden = +(solltage * 7.6).toFixed(2);
+      jahressoll += sollstunden;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${monate[i]}</td>
+        <td>${solltage}</td>
+        <td>${sollstunden}</td>
+        <td><input type="number" min="0" step="0.1" class="ist-eingabe" data-monat="${i}" style="width: 80px;"></td>
+      `;
+      tbody.appendChild(row);
+    }
+    document.getElementById("summe-soll").textContent = jahressoll.toFixed(2);
+    aktualisiereSummen();
+  }
+
+  
+  function aktualisiereSummen() {
+    let istgesamt = 0;
+    let sollgesamt = 0;
+    document.querySelectorAll(".ist-eingabe").forEach(input => {
+      const val = parseFloat(input.value);
+      const monatIndex = parseInt(input.dataset.monat);
+      const sollzelle = input.parentElement.previousElementSibling;
+      const sollstunden = parseFloat(sollzelle.textContent);
+      if (!isNaN(val)) {
+        istgesamt += val;
+        sollgesamt += sollstunden;
+      }
+    });
+    document.getElementById("summe-ist").textContent = istgesamt.toFixed(2);
+    // Jahressumme Soll bleibt erhalten – wird nicht bei Eingabe aktualisiert
+    const uebertrag = parseFloat(uebertragFeld.value) || 0;
+    let ueberstunden = uebertrag + (istgesamt - sollgesamt);
+    // Minusstunden zulässig – keine Begrenzung auf 0
+    document.getElementById("ueberstunden").textContent = ueberstunden.toFixed(2);
+
+    const ueberstunden_h = Math.floor(ueberstunden);
+    const ueberstunden_m = Math.round((ueberstunden - ueberstunden_h) * 60);
+    document.getElementById("ueberstunden-hm").textContent = `${ueberstunden_h} Stunden ${ueberstunden_m} Minuten`;
+
+  }
+
+  jahrDropdown.addEventListener("change", () => {
+    if (jahrDropdown.value) fuelleTabelle(+jahrDropdown.value);
+  });
+
+  document.getElementById("uebertrag").addEventListener("input", aktualisiereSummen);
+  document.addEventListener("input", e => {
+    if (e.target.classList.contains("ist-eingabe")) aktualisiereSummen();
+  });
+
+  if (jahrDropdown.value) {
+    fuelleTabelle(+jahrDropdown.value);
+  }
+});
+</script>
+
+
+<div style="text-align: center; margin-top: 2rem;">
+  <button onclick="exportiereAlsPDF()" style="padding: 0.6rem 1.2rem; font-size: 1rem; background-color: #ffa500; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    Export per PDF
+  </button>
+</div>
+<div style="text-align: center; margin-top: 1rem;">
+  <button onclick="resetEingaben()" style="padding: 0.6rem 1.2rem; font-size: 1rem; background-color: #ccc; color: black; border: none; border-radius: 5px; cursor: pointer;">
+    Alle Einträge löschen
+  </button>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+<script>
+function exportiereAlsPDF() {
+  const jahr = document.getElementById("jahr").value || new Date().getFullYear();
+  const element = document.body;
+  const opt = {
+    margin:       0.3,
+    filename:     `Ueberstundenrechner_${jahr}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+</script>
+
+
+
+<script>
+function resetEingaben() {
+  document.querySelectorAll(".ist-eingabe").forEach(input => input.value = "");
+  document.getElementById("summe-ist").textContent = "0";
+  document.getElementById("ueberstunden").textContent = "0";
+  const hm = document.getElementById("ueberstunden-hm");
+  if (hm) hm.textContent = "0 Stunden 0 Minuten";
+  const uebertrag = document.getElementById("uebertrag");
+  if (uebertrag) uebertrag.value = "0";
+  aktualisiereSummen();
+}
+</script>
+
+</body>
+</html>
