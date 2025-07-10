@@ -498,7 +498,6 @@ function rechneZuDezimal() {
     });
   });
 </script>
-
 <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -509,8 +508,9 @@ function rechneZuDezimal() {
   }
 </script>
 
+
 <script>
-  const CURRENT_VERSION = "v1";
+  let CURRENT_VERSION = null;
 
   async function checkForUpdate() {
     try {
@@ -518,16 +518,15 @@ function rechneZuDezimal() {
       const data = await response.json();
       const latestVersion = data.version;
 
+      const cachedResponse = await caches.match("version.json");
+      const cachedData = cachedResponse ? await cachedResponse.json() : null;
+      CURRENT_VERSION = cachedData?.version || "v0";
+
       if (latestVersion !== CURRENT_VERSION) {
-        const shouldUpdate = confirm("🔄 Eine neue Version der App ist verfügbar. Jetzt aktualisieren?");
+        const shouldUpdate = confirm("🔄 Neue Version verfügbar – jetzt aktualisieren?");
         if (shouldUpdate) {
-          caches.keys().then(function(names) {
-            return Promise.all(names.map(name => caches.delete(name)));
-          }).then(() => {
-            setTimeout(() => {
-              window.location.href = window.location.href;
-            }, 500);
-          });
+          await caches.keys().then(names => Promise.all(names.map(name => caches.delete(name))));
+          window.location.href = window.location.href;
         }
       }
     } catch (e) {
