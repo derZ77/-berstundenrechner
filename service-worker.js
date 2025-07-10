@@ -1,10 +1,11 @@
 
-const CACHE_NAME = "ueberstunden-cache-v3";// Update v2->v3
+const CACHE_NAME = "ueberstunden-cache-v1";
 const OFFLINE_URLS = [
   "./",
   "index.html",
-  "version.json",
-  "libs/jspdf.umd.min.js"
+  "libs/jspdf.umd.min.js",
+  "icon-192x192.png",
+  "icon-512x512.png"
 ];
 
 self.addEventListener("install", event => {

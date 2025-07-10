@@ -525,8 +525,8 @@ function rechneZuDezimal() {
             return Promise.all(names.map(name => caches.delete(name)));
           }).then(() => {
             setTimeout(() => {
-              location.reload(true);
-            }, 500); // kurze Verzögerung zum Abschluss der Cache-Löschung
+              window.location.href = window.location.href;
+            }, 500);
           });
         }
       }
