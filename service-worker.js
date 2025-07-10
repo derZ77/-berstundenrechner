@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "ueberstunden-cache-v1";
+const CACHE_NAME = "ueberstunden-cache-v3";// Update v2->v3
 const OFFLINE_URLS = [
   "./",
   "index.html",
