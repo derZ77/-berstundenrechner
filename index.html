@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Überstunden-Rechner</title>
+<style>
+body {
+  background: linear-gradient(to bottom, #e3f2fd, #f0f2f5);
+}
+
+
+/* Glas-Effekt für Block 1 */
+.block-1, .block-1 * {
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* Animierter Button */
+button {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+button:hover, button:active {
+  background-color: #005bb5 !important;
+  transform: scale(1.03);
+}
+
+
+/* Slide-In Animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.slide-in {
+  opacity: 0;
+  animation: slideIn 0.8s ease-out forwards;
+}
+
+/* Verzögerungen für gestaffeltes Einblenden */
+.slide-delay-1 { animation-delay: 0.2s; }
+.slide-delay-2 { animation-delay: 0.4s; }
+.slide-delay-3 { animation-delay: 0.6s; }
+.slide-delay-4 { animation-delay: 0.8s; }
+.slide-delay-5 { animation-delay: 1.0s; }
+
+
+#jahr {
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+}
+</style>
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+.block {
+    transition: all 0.3s ease;
+}
+input[type="number"] {
+    padding: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+input[type="number"]:focus {
+    outline: none;
+    border-color: #007aff;
+    background-color: #fffde7;
+}
+@media (max-width: 600px) {
+    input[type="number"] {
+        width: 100%;
+    }
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+th {
+    background-color: #c8e6c9;
+    padding: 0.6rem;
+    border: 1px solid #a5d6a7;
+}
+td {
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid #c8e6c9;
+}
+tfoot td {
+    font-weight: bold;
+    background-color: #f1f8e9;
+}
+.result-highlight {
+    background-color: #fff9c4;
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 1.2rem;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+}
+</style><link href="manifest.json" rel="manifest"/>
+<script src="libs/jspdf.umd.min.js"></script>
+<script src="libs/jspdf.umd.min.js"></script>
+<script src="libs/jspdf.umd.min.js"></script>
+<script>
+  async function exportAsPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+
+    let y = 20;
+    doc.setFontSize(16);
+    doc.text("Überstunden-Rechner – PDF Export", 20, y);
+    y += 10;
+    doc.setFontSize(12);
+
+    const jahr = document.getElementById("jahr")?.value || "-";
+    const uebertrag = document.getElementById("uebertrag")?.value || "-";
+    const summenText = document.getElementById("summenbereich")?.innerText || "-";
+
+    doc.text(`Kalenderjahr: ${jahr}`, 20, y); y += 8;
+    doc.text(`Übertrag aus dem Vorjahr: ${uebertrag} h`, 20, y); y += 10;
+
+    doc.setFontSize(14);
+    doc.text("Soll-/Ist-Stunden:", 20, y);
+    y += 8;
+    doc.setFontSize(10);
+
+    const table = document.querySelectorAll("#soll-ist-tabelle tr");
+    table.forEach((row) => {
+      const cols = row.querySelectorAll("td");
+      if (cols.length === 4) {
+        const values = Array.from(cols).map(cell => {
+          const val = cell.querySelector("input")?.value || cell.textContent.trim();
+          return val.padEnd(15, " ");
+        });
+        const line = values.join(" ");
+        doc.text(line, 20, y);
+        y += 6;
+      }
+    });
+
+    y += 8;
+    doc.setFontSize(12);
+    doc.text("Zusammenfassung:", 20, y); y += 8;
+    const lines = doc.splitTextToSize(summenText, 170);
+    lines.forEach(line => {
+      doc.text(line, 20, y);
+      y += 6;
+    });
+
+    doc.save(`ueberstunden_app_${jahr}.pdf`);
+  }
+</script>
+
+<link href="icon-192x192.png" rel="icon" sizes="192x192" type="image/png"/>
+<link href="icon-512x512.png" rel="icon" sizes="512x512" type="image/png"/>
+<link href="icon-192x192.png" rel="apple-touch-icon" sizes="192x192"/>
+<link href="icon-512x512.png" rel="apple-touch-icon" sizes="512x512"/>
+<meta content="#ffffff" name="theme-color"/>
+</head>
+<body>
+<!-- Block 1: App-Überschrift vollständig -->
+<div style="display: flex; justify-content: center; margin-top: 1rem;">
+<div style="background-color: #007aff; color: white; padding: 1rem; text-align: center; font-weight: bold; border-radius: 8px; max-width: 800px; width: 100%; box-shadow: 0 0 8px rgba(0,0,0,0.15);">
+<div style="font-size: 1.4rem;">Rechner der Überstunden</div>
+<div style="font-size: 1rem; margin-top: 0.2rem;">laut Eingaben aus den monatlichen Stundennachweisen (IVU)</div>
+</div>
+</div>
+<div style="font-size: 1rem; margin-top: 0.2rem;"></div>
+<!-- Block 2 & 3: Jahresauswahl und Übertrag -->
+<div class="flex-container" style="max-width: 800px; margin: auto; gap: 1rem; padding: 1rem;">
+<!-- Block 2: Jahresauswahl -->
+<div class="block slide-in slide-delay-1" style="background-color: #e3f2fd; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 10px; padding: 1rem; flex: 1 1 240px; min-width: 220px;">
+<label for="jahr">Kalenderjahr auswählen:</label>
+<select id="jahr" name="jahr" onchange="zeigeFeiertage(); berechneSollIstTabelle()">
+<option disabled="" selected="" value="">Bitte auswählen</option>
+<option value="2024">2024</option>
+<option value="2025">2025</option>
+<option value="2026">2026</option>
+<option value="2027">2027</option>
+<option value="2028">2028</option>
+</select>
+</div>
+<!-- Block 3: Übertrag -->
+<div class="block slide-in slide-delay-2" style="background-color: #e3f2fd; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 10px; padding: 1rem; flex: 1 1 240px; min-width: 220px;">
+<label for="uebertrag">Übertrag aus dem Vorjahr (in Stunden):</label>
+<input id="uebertrag" name="uebertrag" placeholder="z. B. 12.5" step="0.1" type="number"/>
+</div>
+</div>
+<!-- Block 4: Feiertage für Thüringen -->
+<div class="block slide-in slide-delay-3" style="margin: 1rem auto; max-width: 760px; background-color: #e3f2fd; padding: 1rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+<h3 style="margin-top: 0;">Feiertage in Thüringen</h3>
+<div id="feiertage-container">Feiertage werden geladen…</div>
+</div>
+<script>
+  function zeigeFeiertage() {
+    const jahr = document.getElementById("jahr").value;
+    const daten = {
+      "2024": [
+        ["01.01.2024", "Montag", "Neujahr"],
+        ["29.03.2024", "Freitag", "Karfreitag"],
+        ["01.04.2024", "Montag", "Ostermontag"],
+        ["01.05.2024", "Mittwoch", "Tag der Arbeit"],
+        ["09.05.2024", "Donnerstag", "Christi Himmelfahrt"],
+        ["20.05.2024", "Montag", "Pfingstmontag"],
+        ["20.09.2024", "Freitag", "Weltkindertag"],
+        ["03.10.2024", "Donnerstag", "Tag der Deutschen Einheit"],
+        ["31.10.2024", "Donnerstag", "Reformationstag"],
+        ["25.12.2024", "Mittwoch", "1. Weihnachtstag"],
+        ["26.12.2024", "Donnerstag", "2. Weihnachtstag"],
+      ],
+      "2025": [
+        ["01.01.2025", "Mittwoch", "Neujahr"],
+        ["18.04.2025", "Freitag", "Karfreitag"],
+        ["21.04.2025", "Montag", "Ostermontag"],
+        ["01.05.2025", "Donnerstag", "Tag der Arbeit"],
+        ["29.05.2025", "Donnerstag", "Christi Himmelfahrt"],
+        ["09.06.2025", "Montag", "Pfingstmontag"],
+        ["20.09.2025", "Samstag", "Weltkindertag"],
+        ["03.10.2025", "Freitag", "Tag der Deutschen Einheit"],
+        ["31.10.2025", "Freitag", "Reformationstag"],
+        ["25.12.2025", "Donnerstag", "1. Weihnachtstag"],
+        ["26.12.2025", "Freitag", "2. Weihnachtstag"],
+      ],
+      "2026": [
+        ["01.01.2026", "Donnerstag", "Neujahr"],
+        ["03.04.2026", "Freitag", "Karfreitag"],
+        ["06.04.2026", "Montag", "Ostermontag"],
+        ["01.05.2026", "Freitag", "Tag der Arbeit"],
+        ["14.05.2026", "Donnerstag", "Christi Himmelfahrt"],
+        ["25.05.2026", "Montag", "Pfingstmontag"],
+        ["20.09.2026", "Sonntag", "Weltkindertag"],
+        ["03.10.2026", "Samstag", "Tag der Deutschen Einheit"],
+        ["31.10.2026", "Samstag", "Reformationstag"],
+        ["25.12.2026", "Freitag", "1. Weihnachtstag"],
+        ["26.12.2026", "Samstag", "2. Weihnachtstag"],
+      ],
+      "2027": [
+        ["01.01.2027", "Freitag", "Neujahr"],
+        ["26.03.2027", "Freitag", "Karfreitag"],
+        ["29.03.2027", "Montag", "Ostermontag"],
+        ["01.05.2027", "Samstag", "Tag der Arbeit"],
+        ["06.05.2027", "Donnerstag", "Christi Himmelfahrt"],
+        ["17.05.2027", "Montag", "Pfingstmontag"],
+        ["20.09.2027", "Montag", "Weltkindertag"],
+        ["03.10.2027", "Sonntag", "Tag der Deutschen Einheit"],
+        ["31.10.2027", "Sonntag", "Reformationstag"],
+        ["25.12.2027", "Samstag", "1. Weihnachtstag"],
+        ["26.12.2027", "Sonntag", "2. Weihnachtstag"],
+      ],
+      "2028": [
+        ["01.01.2028", "Samstag", "Neujahr"],
+        ["14.04.2028", "Freitag", "Karfreitag"],
+        ["17.04.2028", "Montag", "Ostermontag"],
+        ["01.05.2028", "Montag", "Tag der Arbeit"],
+        ["25.05.2028", "Donnerstag", "Christi Himmelfahrt"],
+        ["05.06.2028", "Montag", "Pfingstmontag"],
+        ["20.09.2028", "Mittwoch", "Weltkindertag"],
+        ["03.10.2028", "Dienstag", "Tag der Deutschen Einheit"],
+        ["31.10.2028", "Dienstag", "Reformationstag"],
+        ["25.12.2028", "Montag", "1. Weihnachtstag"],
+        ["26.12.2028", "Dienstag", "2. Weihnachtstag"],
+      ],
+
+    };
+
+    const container = document.getElementById("feiertage-container");
+    container.innerHTML = "";
+
+    if (daten[jahr]) {
+      const table = document.createElement("table");
+      table.style.width = "100%";
+      table.style.borderCollapse = "collapse";
+
+      const header = document.createElement("tr");
+      ["Datum", "Wochentag", "Feiertag"].forEach(text => {
+        const th = document.createElement("th");
+        th.textContent = text;
+        th.style.textAlign = "center";
+        th.style.padding = "8px";
+        th.style.borderBottom = "2px solid #ccc";
+        header.appendChild(th);
+      });
+      table.appendChild(header);
+
+      daten[jahr].forEach(eintrag => {
+        const row = document.createElement("tr");
+        eintrag.forEach(cell => {
+          const td = document.createElement("td");
+          td.textContent = cell;
+          td.style.padding = "8px";
+          td.style.borderBottom = "1px solid #eee";
+          row.appendChild(td);
+        });
+        table.appendChild(row);
+      });
+
+      container.appendChild(table);
+    } else {
+      container.innerHTML = "<p>Keine Daten für das ausgewählte Jahr.</p>";
+    }
+  }
+
+  window.onload = zeigeFeiertage;
+
+
+function rechneZuHHMM() {
+  const dez = parseFloat(document.getElementById("dezimalInput").value);
+  if (isNaN(dez)) {
+    document.getElementById("hhmmAusgabe").textContent = "";
+    return;
+  }
+  const std = Math.floor(dez);
+  const min = Math.round((dez - std) * 60);
+  document.getElementById("hhmmAusgabe").textContent = `${std} Std ${min} Min`;
+}
+
+function rechneZuDezimal() {
+  const eingabe = document.getElementById("hhInput").value;
+  const parts = eingabe.split(":");
+  if (parts.length !== 2) {
+    document.getElementById("dezimalAusgabe").textContent = "";
+    return;
+  }
+  const std = parseInt(parts[0]);
+  const min = parseInt(parts[1]);
+  if (isNaN(std) || isNaN(min)) {
+    document.getElementById("dezimalAusgabe").textContent = "";
+    return;
+  }
+  const dez = (std + min / 60).toFixed(2);
+  document.getElementById("dezimalAusgabe").textContent = `${dez} h`;
+}
+</script>
+<!-- Block 5: Soll- und Iststunden -->
+<div class="block slide-in slide-delay-4" style="margin: 1rem auto; max-width: 760px; background-color: #e0f7da; padding: 1rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+<div style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 0.6rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.95rem;">Hinweis: Alle Werte müssen im Dezimalformat eingegeben werden. Auch die Ergebnisse werden in Dezimalzahlen ausgegeben.</div><h3 style="margin-top: 0;">Soll- und Iststunden</h3>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse;">
+<thead>
+<tr>
+<th style="text-align: left; padding: 8px; border-bottom: 2px solid #ccc;">Monat</th>
+<th style="text-align: left; padding: 8px; border-bottom: 2px solid #ccc;">Soll-Arbeitstage</th>
+<th style="text-align: left; padding: 8px; border-bottom: 2px solid #ccc;">Soll-Stunden</th>
+<th style="text-align: left; padding: 8px; border-bottom: 2px solid #ccc;">Ist-Stunden</th>
+</tr>
+</thead>
+<tbody id="soll-ist-tabelle"></tbody>
+</table>
+</div>
+<div id="summenbereich" style="margin-top: 1rem; font-weight: bold;"></div>
+</div>
+<script>
+  function berechneSollIstTabelle() {
+    const jahr = parseInt(document.getElementById("jahr").value);
+
+    const solltage = {
+  "2024": [23, 21, 21, 22, 23, 20, 23, 22, 21, 23, 21, 22],
+  "2025": [23, 20, 21, 22, 22, 21, 23, 21, 22, 23, 20, 23],
+  "2026": [22, 20, 22, 22, 21, 22, 23, 21, 22, 22, 21, 23],
+  "2027": [21, 20, 23, 22, 21, 22, 22, 22, 22, 21, 22, 23],
+  "2028": [21, 21, 23, 20, 23, 22, 21, 23, 21, 22, 22, 21],
+};
+
+
+    const tableBody = document.getElementById("soll-ist-tabelle");
+    tableBody.innerHTML = "";
+
+    let gesSoll = 0;
+    let gesIst = 0;
+
+    const monatNamen = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+    const tageProMonat = solltage[jahr] || [];
+
+    for (let i = 0; i < 12; i++) {
+      const sollTage = tageProMonat[i] || 0;
+      const sollStunden = (sollTage * 7.6).toFixed(2);
+      gesSoll += parseFloat(sollStunden);
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td style='padding: 8px; border-bottom: 1px solid #ccc;'>${monatNamen[i]}</td>
+        <td style='padding: 8px; border-bottom: 1px solid #ccc;'>${sollTage}</td>
+        <td style='padding: 8px; border-bottom: 1px solid #ccc;'>${sollStunden}</td>
+        <td style='padding: 8px; border-bottom: 1px solid #ccc;'>
+          <input type='number' step='0.1' class='ist-eingabe' data-soll='${sollStunden}' style='width: 100%; padding: 4px;' onchange='aktualisiereSummen()'>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    }
+
+    aktualisiereSummen();
+  }
+
+  
+  function aktualisiereSummen() {
+    let istGesamt = 0;
+    let sollGesamt = 0;
+    let ueberstunden = 0;
+    const uebertrag = parseFloat(document.getElementById("uebertrag").value) || 0;
+
+    const istInputs = document.querySelectorAll(".ist-eingabe");
+
+    istInputs.forEach(input => {
+      const soll = parseFloat(input.getAttribute("data-soll")) || 0;
+      sollGesamt += soll;
+    });
+
+    istInputs.forEach(input => {
+      const ist = input.value.trim();
+      if (ist !== "") {
+        const val = parseFloat(ist) || 0;
+        const soll = parseFloat(input.getAttribute("data-soll")) || 0;
+        istGesamt += val;
+        ueberstunden += (val - soll);
+      }
+    });
+
+    const gesamt = uebertrag + ueberstunden;
+
+    document.getElementById("summenbereich").innerHTML = `
+      Jahressumme Sollstunden: ${sollGesamt.toFixed(2)} h<br/>
+      Jahressumme Iststunden (mit Einträgen): ${istGesamt.toFixed(2)} h<br/>
+      Überstundenstand inkl. Übertrag: ${gesamt.toFixed(2)} h
+    `;
+  }
+
+  window.addEventListener("load", berechneSollIstTabelle);
+</script>
+<!-- Export Button für PDF -->
+<div style="text-align: center; margin: 2rem;">
+<button onclick="exportAsPDF()" style="padding: 0.8rem 1.5rem; font-size: 1rem; background-color: #007aff; color: white; border: none; border-radius: 6px;">
+    App-Inhalt als PDF exportieren
+  </button>
+</div>
+<!-- jsPDF + html2canvas Integration -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Block 6: Umrechnung Dezimal <-> hh:mm -->
+<div class="block slide-in slide-delay-5" style="margin: 2rem auto; max-width: 800px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.1); padding: 1.5rem; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+<h3 style="margin-top: 0;">Umrechnung Dezimal &lt;-&gt; Stunden:Minuten</h3>
+<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+<div style="flex: 1 1 300px;">
+<label for="dezimalInput" style="font-weight: 500; display: block; margin-bottom: 0.3rem;">Dezimal eingeben (z. B. 7.75):</label>
+<input id="dezimalInput" oninput="rechneZuHHMM()" placeholder="z. B. 7.5" step="0.01" style="width: 100%; padding: 0.4rem;background: #ffffffcc; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);" type="number"/>
+<div id="hhmmAusgabe" style="margin-top: 0.5rem; font-weight: bold;"></div>
+</div>
+<div style="flex: 1 1 300px;">
+<label for="hhInput" style="font-weight: 500; display: block; margin-bottom: 0.3rem;">hh:mm eingeben (z. B. 7:45):</label>
+<input id="hhInput" oninput="rechneZuDezimal()" placeholder="z. B. 7:45" style="width: 100%; padding: 0.4rem;background: #ffffffcc; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);" type="text"/>
+<div id="dezimalAusgabe" style="margin-top: 0.5rem; font-weight: bold;"></div>
+</div>
+</div>
+</div>
+<script>
+  const STORAGE_KEY = "ueberstunden_app_data";
+
+  function saveInputsToLocalStorage() {
+    const inputs = document.querySelectorAll("input");
+    const data = {};
+    inputs.forEach(input => {
+      if (input.id) {
+        data[input.id] = input.value;
+      }
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function loadInputsFromLocalStorage() {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    Object.entries(data).forEach(([id, value]) => {
+      const input = document.getElementById(id);
+      if (input) {
+        input.value = value;
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadInputsFromLocalStorage();
+    const inputs = document.querySelectorAll("input");
+    inputs.forEach(input => {
+      input.addEventListener("input", saveInputsToLocalStorage);
+    });
+  });
+</script>
+<script>
+  const CURRENT_VERSION = "v1";
+
+  async function checkForUpdate() {
+    try {
+      const response = await fetch("version.json", { cache: "no-store" });
+      const data = await response.json();
+      const latestVersion = data.version;
+
+      if (latestVersion !== CURRENT_VERSION) {
+        const shouldUpdate = confirm("🔄 Eine neue Version der App ist verfügbar. Jetzt aktualisieren?");
+        if (shouldUpdate) {
+          caches.keys().then(function(names) {
+            for (let name of names) caches.delete(name);
+          }).then(() => {
+            location.reload(true);
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Updateprüfung fehlgeschlagen:", e);
+    }
+  }
+
+  window.addEventListener("load", () => {
+    checkForUpdate();
+  });
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(reg => console.log("Service Worker registriert:", reg.scope))
+        .catch(err => console.error("SW Fehler:", err));
+    });
+  }
+</script>
+</body>
+</html>
