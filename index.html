@@ -166,7 +166,6 @@ tfoot td {
     doc.save(`ueberstunden_app_${jahr}.pdf`);
   }
 </script>
-
 <link href="icon-192x192.png" rel="icon" sizes="192x192" type="image/png"/>
 <link href="icon-512x512.png" rel="icon" sizes="512x512" type="image/png"/>
 <link href="icon-192x192.png" rel="apple-touch-icon" sizes="192x192"/>
@@ -499,6 +498,17 @@ function rechneZuDezimal() {
     });
   });
 </script>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(reg => console.log("Service Worker registriert:", reg.scope))
+        .catch(err => console.error("SW Fehler:", err));
+    });
+  }
+</script>
+
 <script>
   const CURRENT_VERSION = "v1";
 
@@ -512,9 +522,11 @@ function rechneZuDezimal() {
         const shouldUpdate = confirm("🔄 Eine neue Version der App ist verfügbar. Jetzt aktualisieren?");
         if (shouldUpdate) {
           caches.keys().then(function(names) {
-            for (let name of names) caches.delete(name);
+            return Promise.all(names.map(name => caches.delete(name)));
           }).then(() => {
-            location.reload(true);
+            setTimeout(() => {
+              location.reload(true);
+            }, 500); // kurze Verzögerung zum Abschluss der Cache-Löschung
           });
         }
       }
@@ -526,15 +538,6 @@ function rechneZuDezimal() {
   window.addEventListener("load", () => {
     checkForUpdate();
   });
-</script>
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(reg => console.log("Service Worker registriert:", reg.scope))
-        .catch(err => console.error("SW Fehler:", err));
-    });
-  }
 </script>
 </body>
 </html>
